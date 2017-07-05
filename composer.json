@@ -1,0 +1,32 @@
+{
+    "name": "PR-CY Future Realtime",
+    "description": "Обёртка над PR-CY Future Realtime API",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "PR-CY.RU",
+            "email": "we@pr-cy.ru"
+        }
+    ],
+	"repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/kudmni/rabbitmq"
+        }
+    ],
+    "require": {
+        "php": ">=5.5",
+		"guzzlehttp/guzzle": "6.1.0",
+		"kudmni/rabbitmq": "0.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.7.*",
+        "satooshi/php-coveralls": "1.0.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "PrCy\\Frealtime\\": "src/"
+        }
+    }
+}
