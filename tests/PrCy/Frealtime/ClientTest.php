@@ -138,47 +138,36 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
 	public function testDoHttpRequestEmptyResponse() {
 		$domain = 'example.com';
 
-		$requestMock = $this->getMockBuilder('\GuzzleHttp\Psr7\Request')
-			->disableOriginalConstructor()
-			->getMock();
-
 		$httpClientMock = $this->getMockBuilder('\GuzzleHttp\Client')
 			->disableOriginalConstructor()
 			->getMock();
 		$httpClientMock->expects($this->once())
-			->method('send')
+			->method('request')
 			->with(
-				$this->equalTo($requestMock),
+				$this->equalTo('GET'),
+				$this->equalTo('/yandex/catalog'),
 				$this->equalTo(['query' => ['domain' => $domain]])
 			)
 			->willReturn(null);
 
 		$frealtimeApiClient = $this->getMockBuilder('\PrCy\Frealtime\Client')
 			->disableOriginalConstructor()
-			->setMethods(['createHttpClient', 'createHttpRequest'])
+			->setMethods(['createHttpClient'])
 			->getMock();
 		$frealtimeApiClient->expects($this->once())
 			->method('createHttpClient')
 			->willReturn($httpClientMock);
-		$frealtimeApiClient->expects($this->once())
-			->method('createHttpRequest')
-			->willReturn($requestMock);
 
 		$frealtimeApiClient->__construct(FrealtimeClient::PROTOCOL_HTTP, []);
 
 		$frealtimeApiClient->getYandexCatalog($domain);
 	}
 
-
 	/**
 	 * @expectedException \PrCy\Frealtime\Exception\InvalidReponseStatusCodeException
 	 */
 	public function testDoHttpRequestBadStatusCode() {
 		$domain = 'example.com';
-
-		$requestMock = $this->getMockBuilder('\GuzzleHttp\Psr7\Request')
-			->disableOriginalConstructor()
-			->getMock();
 
 		$streamMock = $this->getMockBuilder('\GuzzleHttp\Psr7\Stream')
 			->disableOriginalConstructor()
@@ -202,23 +191,21 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
 			->disableOriginalConstructor()
 			->getMock();
 		$httpClientMock->expects($this->once())
-			->method('send')
+			->method('request')
 			->with(
-				$this->equalTo($requestMock),
+				$this->equalTo('GET'),
+				$this->equalTo('/yandex/catalog'),
 				$this->equalTo(['query' => ['domain' => $domain]])
 			)
 			->willReturn($responseMock);
 
 		$frealtimeApiClient = $this->getMockBuilder('\PrCy\Frealtime\Client')
 			->disableOriginalConstructor()
-			->setMethods(['createHttpClient', 'createHttpRequest'])
+			->setMethods(['createHttpClient'])
 			->getMock();
 		$frealtimeApiClient->expects($this->once())
 			->method('createHttpClient')
 			->willReturn($httpClientMock);
-		$frealtimeApiClient->expects($this->once())
-			->method('createHttpRequest')
-			->willReturn($requestMock);
 
 		$frealtimeApiClient->__construct(FrealtimeClient::PROTOCOL_HTTP, []);
 		$frealtimeApiClient->getYandexCatalog($domain);
@@ -229,10 +216,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testDoHttpRequestInvalidJson() {
 		$domain = 'example.com';
-
-		$requestMock = $this->getMockBuilder('\GuzzleHttp\Psr7\Request')
-			->disableOriginalConstructor()
-			->getMock();
 
 		$streamMock = $this->getMockBuilder('\GuzzleHttp\Psr7\Stream')
 			->disableOriginalConstructor()
@@ -256,23 +239,21 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
 			->disableOriginalConstructor()
 			->getMock();
 		$httpClientMock->expects($this->once())
-			->method('send')
+			->method('request')
 			->with(
-				$this->equalTo($requestMock),
+				$this->equalTo('GET'),
+				$this->equalTo('/yandex/catalog'),
 				$this->equalTo(['query' => ['domain' => $domain]])
 			)
 			->willReturn($responseMock);
 
 		$frealtimeApiClient = $this->getMockBuilder('\PrCy\Frealtime\Client')
 			->disableOriginalConstructor()
-			->setMethods(['createHttpClient', 'createHttpRequest'])
+			->setMethods(['createHttpClient'])
 			->getMock();
 		$frealtimeApiClient->expects($this->once())
 			->method('createHttpClient')
 			->willReturn($httpClientMock);
-		$frealtimeApiClient->expects($this->once())
-			->method('createHttpRequest')
-			->willReturn($requestMock);
 
 		$frealtimeApiClient->__construct(FrealtimeClient::PROTOCOL_HTTP, []);
 		$frealtimeApiClient->getYandexCatalog($domain);
@@ -280,10 +261,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
 
 	public function testDoHttpRequestNormal() {
 		$domain = 'example.com';
-
-		$requestMock = $this->getMockBuilder('\GuzzleHttp\Psr7\Request')
-			->disableOriginalConstructor()
-			->getMock();
 
 		$streamMock = $this->getMockBuilder('\GuzzleHttp\Psr7\Stream')
 			->disableOriginalConstructor()
@@ -307,23 +284,21 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
 			->disableOriginalConstructor()
 			->getMock();
 		$httpClientMock->expects($this->once())
-			->method('send')
+			->method('request')
 			->with(
-				$this->equalTo($requestMock),
+				$this->equalTo('GET'),
+				$this->equalTo('/yandex/catalog'),
 				$this->equalTo(['query' => ['domain' => $domain]])
 			)
 			->willReturn($responseMock);
 
 		$frealtimeApiClient = $this->getMockBuilder('\PrCy\Frealtime\Client')
 			->disableOriginalConstructor()
-			->setMethods(['createHttpClient', 'createHttpRequest'])
+			->setMethods(['createHttpClient'])
 			->getMock();
 		$frealtimeApiClient->expects($this->once())
 			->method('createHttpClient')
 			->willReturn($httpClientMock);
-		$frealtimeApiClient->expects($this->once())
-			->method('createHttpRequest')
-			->willReturn($requestMock);
 
 		$frealtimeApiClient->__construct(FrealtimeClient::PROTOCOL_HTTP, []);
 		$this->assertFalse($frealtimeApiClient->getYandexCatalog($domain));

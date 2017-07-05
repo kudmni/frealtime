@@ -59,16 +59,6 @@ class Client {
 	}
 
 	/**
-	 *
-	 * @param string $method
-	 * @param string $uri
-	 * @codeCoverageIgnore
-	 */
-	protected function createHttpRequest($method, $uri) {
-		new \GuzzleHttp\Psr7\Request($method, $uri);
-	}
-
-	/**
 	 * Создаёт экземпляр amqp-клиента
 	 *
 	 * @param type $options
@@ -230,9 +220,8 @@ class Client {
 	 */
 	protected function doHttpRequest($method, $path, $params = []) {
 		$method		 = strtoupper($method);
-		$request	 = $this->createHttpRequest($method, $path);
 		$dataMode	 = ($method == 'GET') ? 'query' : 'form_params';
-		$response	 = $this->httpClient->send($request, [$dataMode => $params]);
+		$response	 = $this->httpClient->request($method, $path, [$dataMode => $params]);
 		if (empty($response)) {
 			throw new EmptyResponseException("Future Realtime API empty response from path: $path");
 		}
