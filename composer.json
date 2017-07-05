@@ -1,5 +1,5 @@
 {
-    "name": "PR-CY Future Realtime",
+    "name": "kudmni/frealtime",
     "description": "Обёртка над PR-CY Future Realtime API",
     "type": "library",
     "license": "MIT",
