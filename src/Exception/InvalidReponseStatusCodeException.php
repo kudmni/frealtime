@@ -1,6 +1,7 @@
 <?php
 namespace PrCy\Frealtime\Exception;
 
-class InvalidReponseStatusCodeException extends \Exception {
+class InvalidReponseStatusCodeException extends \Exception
+{
 
 }
