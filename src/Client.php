@@ -23,12 +23,8 @@ class Client
     /**
      * Конструктор класса
      *
-     * @param type $protocol
-     * @param type $httpBaseUrl
-     * @param type $amqpHost
-     * @param type $amqpPort
-     * @param type $amqpUser
-     * @param type $amqpPassword
+     * @param string $protocol
+     * @param array $options (смотри createHttpClient и createAmqpClient)
      * @throws InvalidProtocolException
      */
     public function __construct($protocol, $options)
@@ -71,11 +67,12 @@ class Client
     protected function createAmqpClient($options)
     {
         return new \PrCy\RabbitMQ\Producer(
-            empty($options['host'])      ? 'localhost'   : $options['host'],
-            empty($options['port'])      ? 5672          : $options['port'],
-            empty($options['user'])      ? 'guest'       : $options['user'],
-            empty($options['password'])  ? 'guest'       : $options['password'],
-            empty($options['prefix'])    ? ''            : $options['prefix']
+            empty($options['host'])             ? 'localhost'   : $options['host'],
+            empty($options['port'])             ? 5672          : $options['port'],
+            empty($options['user'])             ? 'guest'       : $options['user'],
+            empty($options['password'])         ? 'guest'       : $options['password'],
+            empty($options['messagePrefix'])    ? ''            : $options['messagePrefix'],
+            empty($options['appPrefix'])        ? ''            : $options['appPrefix']
         );
     }
 
