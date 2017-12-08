@@ -59,6 +59,67 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testGetGoogleInfo()
+    {
+        $domain  = 'example.com';
+        $result  = [
+            'url' => "http://example.com/",
+            "position" => 1,
+            "host" => "example.com",
+            "title" => "description"
+        ];
+        $frealtimeApiClient  = $this->getMockBuilder('\PrCy\Frealtime\Client')
+            ->disableOriginalConstructor()
+            ->setMethods(['getGoogleSerp'])
+            ->getMock();
+
+        $apiResponse = [
+            "count" => 1,
+            "serp" => [
+                [
+                    "url" => "http://example.com/",
+                    "position" => 1,
+                    "host" => "example.com",
+                    "title" => "description"
+                ]
+            ]
+        ];
+        $frealtimeApiClient->expects($this->once())
+            ->method('getGoogleSerp')
+            ->with($this->equalTo('info:' . $domain))
+            ->willReturn($apiResponse);
+        $this->assertEquals(
+            $result,
+            $frealtimeApiClient->getGoogleInfo($domain)
+        );
+    }
+
+    public function testGetGoogleNews()
+    {
+        $query   = 'site:example.com';
+        $result  = ['count' => 100500];
+        $frealtimeApiClient  = $this->getMockBuilder('\PrCy\Frealtime\Client')
+            ->disableOriginalConstructor()
+            ->setMethods(['doRequest'])
+            ->getMock();
+        $frealtimeApiClient->expects($this->once())
+            ->method('doRequest')
+            ->with(
+                $this->equalTo('GET'),
+                $this->equalTo('/google/search'),
+                $this->equalTo('frealtime.api.google.search'),
+                $this->equalTo([
+                    'query' => $query,
+                    'tbm'   => 'nws',
+                ])
+            )
+            ->willReturn($result);
+        $this->assertEquals(
+            100500,
+            $frealtimeApiClient->getGoogleNews('example.com')
+        );
+    }
+
     public function testGetYandexCatalog()
     {
         $domain  = 'example.com';

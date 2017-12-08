@@ -128,6 +128,39 @@ class Client
     }
 
     /**
+     * Возвращает информацию о домене в Google или false
+     *
+     * @param string $domain
+     * @return mixed
+     */
+    public function getGoogleInfo($domain)
+    {
+        $serp = $this->getGoogleSerp("info:$domain");
+        return !empty($serp['serp'][0]) ? $serp['serp'][0] : false;
+    }
+
+    /**
+     * Возвращает информацию о наличии сайта в GoogleNews
+     *
+     * @param string $domain
+     *
+     * @return mixed
+     */
+    public function getGoogleNews($domain)
+    {
+        $serp = $this->doRequest(
+            'GET',
+            '/google/search',
+            'frealtime.api.google.search',
+            [
+                'query' => 'site:' . $domain,
+                'tbm'   => 'nws',
+            ]
+        );
+        return !empty($serp['count']) ? $serp['count'] : null;
+    }
+
+    /**
      * Получает данные из Яндекс.Каталога или false
      *
      * @param string $domain
