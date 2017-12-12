@@ -6,6 +6,7 @@ use \PrCy\Frealtime\Exception\InvalidProtocolException;
 use \PrCy\Frealtime\Exception\EmptyResponseException;
 use \PrCy\Frealtime\Exception\InvalidReponseStatusCodeException;
 use \PrCy\Frealtime\Exception\InvalidResponseBodyException;
+use \PrCy\RabbitMQ\Producer;
 
 /**
  * Class Client
@@ -66,7 +67,7 @@ class Client
      */
     protected function createAmqpClient($options)
     {
-        return new \PrCy\RabbitMQ\Producer(
+        return new Producer(
             empty($options['host'])             ? 'localhost'   : $options['host'],
             empty($options['port'])             ? 5672          : $options['port'],
             empty($options['user'])             ? 'guest'       : $options['user'],
@@ -85,9 +86,10 @@ class Client
      * @param string $searchType
      * @param integer $page
      * @param integer $numdoc
+     * @param integer $priority
      * @return array
      */
-    public function getGoogleSerp($query, $lang = null, $geo = null, $searchType = null, $page = null, $numdoc = null)
+    public function getGoogleSerp($query, $lang = null, $geo = null, $searchType = null, $page = null, $numdoc = null, $priority = Producer::PRIORITY_NORMAL)
     {
         // Оставим только заданные параметры
         $params = array_filter(
@@ -107,7 +109,8 @@ class Client
             'GET',
             '/google/search',
             'frealtime.api.google.search',
-            $params
+            $params,
+            $priority
         );
     }
 
@@ -115,11 +118,12 @@ class Client
      * Возвращает индексацию в Google или false
      *
      * @param string $domain
+     * @param integer $priority
      * @return mixed
      */
-    public function getGoogleIndex($domain)
+    public function getGoogleIndex($domain, $priority = Producer::PRIORITY_NORMAL)
     {
-        $serp = $this->getGoogleSerp("site:$domain");
+        $serp = $this->getGoogleSerp("site:$domain", null, null, null, null, null, $priority);
         $result = false;
         if (is_array($serp) && array_key_exists('count', $serp)) {
             $result = (int) $serp['count'];
@@ -131,11 +135,12 @@ class Client
      * Возвращает информацию о домене в Google или false
      *
      * @param string $domain
+     * @param integer $priority
      * @return mixed
      */
-    public function getGoogleInfo($domain)
+    public function getGoogleInfo($domain, $priority = Producer::PRIORITY_NORMAL)
     {
-        $serp = $this->getGoogleSerp("info:$domain");
+        $serp = $this->getGoogleSerp("info:$domain", null, null, null, null, null, $priority);
         return !empty($serp['serp'][0]) ? $serp['serp'][0] : false;
     }
 
@@ -143,10 +148,11 @@ class Client
      * Возвращает информацию о наличии сайта в GoogleNews
      *
      * @param string $domain
+     * @param integer $priority
      *
      * @return mixed
      */
-    public function getGoogleNews($domain)
+    public function getGoogleNews($domain, $priority = Producer::PRIORITY_NORMAL)
     {
         $serp = $this->doRequest(
             'GET',
@@ -155,7 +161,8 @@ class Client
             [
                 'query' => 'site:' . $domain,
                 'tbm'   => 'nws',
-            ]
+            ],
+            $priority
         );
         return !empty($serp['count']) ? $serp['count'] : null;
     }
@@ -164,15 +171,17 @@ class Client
      * Получает данные из Яндекс.Каталога или false
      *
      * @param string $domain
+     * @param integer $priority
      * @return mixed
      */
-    public function getYandexCatalog($domain)
+    public function getYandexCatalog($domain, $priority = Producer::PRIORITY_NORMAL)
     {
         return $this->doRequest(
             'GET',
             '/yandex/catalog',
             'frealtime.api.yandex.catalog',
-            ['domain' => $domain]
+            ['domain' => $domain],
+            $priority
         );
     }
 
@@ -182,9 +191,10 @@ class Client
      * @param string $query
      * @param string $region
      * @param string $tld
+     * @param integer $priority
      * @return array
      */
-    public function getYandexSerp($query, $region = null, $tld = null)
+    public function getYandexSerp($query, $region = null, $tld = null, $priority = Producer::PRIORITY_NORMAL)
     {
         // Оставим только заданные параметры
         $params = array_filter(
@@ -197,7 +207,8 @@ class Client
             'GET',
             '/yandex/search',
             'frealtime.api.yandex.search',
-            $params
+            $params,
+            $priority
         );
     }
 
@@ -205,11 +216,12 @@ class Client
      * Возвращает индексацию в Яндексе или false
      *
      * @param string $domain
+     * @param integer $priority
      * @return mixed
      */
-    public function getYandexIndex($domain)
+    public function getYandexIndex($domain, $priority = Producer::PRIORITY_NORMAL)
     {
-        $serp = $this->getYandexSerp("host:$domain | host:www.$domain");
+        $serp = $this->getYandexSerp("host:$domain | host:www.$domain", null, null, $priority);
         $result = false;
         if (is_array($serp) && array_key_exists('count', $serp)) {
             $result = (int) $serp['count'];
@@ -225,14 +237,15 @@ class Client
      * @param string $httpPath
      * @param string $amqpRoutingKey
      * @param array $params
+     * @param integer $priority
      * @return mixed
      */
-    protected function doRequest($httpMethod, $httpPath, $amqpRoutingKey, $params = [])
+    protected function doRequest($httpMethod, $httpPath, $amqpRoutingKey, $params = [], $priority = Producer::PRIORITY_NORMAL)
     {
         if ($this->protocol == self::PROTOCOL_HTTP) {
             return $this->doHttpRequest($httpMethod, $httpPath, $params);
         } else {
-            return $this->doAmqpRequest($amqpRoutingKey, $params);
+            return $this->doAmqpRequest($amqpRoutingKey, $params, $priority);
         }
     }
 
@@ -243,9 +256,9 @@ class Client
      * @param array $params
      * @return mixed
      */
-    protected function doAmqpRequest($routingKey, $params = [])
+    protected function doAmqpRequest($routingKey, $params = [], $priority = Producer::PRIORITY_NORMAL)
     {
-        return $this->amqpClient->addRpcMessage($routingKey, $params);
+        return $this->amqpClient->addRpcMessage($routingKey, $params, $priority);
     }
 
     /**
