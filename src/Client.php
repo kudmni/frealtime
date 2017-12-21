@@ -17,6 +17,8 @@ class Client
     const PROTOCOL_AMQP = 'amqp';
     const PROTOCOL_HTTP = 'http';
 
+    public $timeout = 60; // Таймаут выполнения запроса к API, сек
+
     protected $protocol;
     protected $httpClient;
     protected $amqpClient;
@@ -53,7 +55,7 @@ class Client
         return new \GuzzleHttp\Client([
             'base_uri'       => $baseUrl,
             'http_errors'    => false,
-            'timeout'        => 60,
+            'timeout'        => $this->timeout,
             'verify'         => false
         ]);
     }
@@ -258,7 +260,7 @@ class Client
      */
     protected function doAmqpRequest($routingKey, $params = [], $priority = Producer::PRIORITY_NORMAL)
     {
-        return $this->amqpClient->addRpcMessage($routingKey, $params, $priority);
+        return $this->amqpClient->addRpcMessage($routingKey, $params, $priority, $this->timeout);
     }
 
     /**
