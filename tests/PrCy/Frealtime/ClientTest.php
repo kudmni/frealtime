@@ -376,4 +376,70 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $frealtimeApiClient->__construct(FrealtimeClient::PROTOCOL_HTTP, []);
         $this->assertFalse($frealtimeApiClient->getYandexCatalog($domain));
     }
+
+    public function testGetLemmasForUrl()
+    {
+        $domain  = 'example.com';
+        $result  = [
+            "keywordsLemmasCount" => 0,
+            "keywordsLemmas"      => [],
+            "lemmasCount" => 1,
+            "lemmas"      => [
+                [
+                    "docsCount"  => 34765,
+                    "tf"         => 0.017543859649122806,
+                    "termsCount" => 6,
+                    "idf"        => 1.620057708962932,
+                    "lemma"      => "ученый",
+                    "tfidf"      => 0.02842206506952512
+                ]
+            ]
+        ];
+        $frealtimeApiClient  = $this->getMockBuilder('\PrCy\Frealtime\Client')
+            ->disableOriginalConstructor()
+            #->setMethods(['getLemmasForUrl'])
+            ->setMethods(['doRequest'])
+            ->getMock();
+#        $frealtimeApiClient->expects($this->once())
+#            ->method('getLemmasForUrl')
+#            ->with($this->equalTo("example.com"))
+#            ->willReturn($result);
+
+        $url = 'http://example.com';
+        $keywords = [];
+        $frealtimeApiClient->expects($this->once())
+            ->method('doRequest')
+            ->with(
+                $this->equalTo('GET'),
+                $this->equalTo('/ca/tf_idf'),
+                $this->equalTo('frealtime.api.ca.tf_idf'),
+                $this->equalTo(['url' => $url, 'keywords' => $keywords])
+            )
+            ->willReturn($result);
+
+        $frealtimeApiClient->getLemmasForUrl($url, $keywords);
+    }
+
+
+
+    public function _testGetYandexSerp()
+    {
+        return;
+        $query   = 'test';
+        $result  = ['count' => -1, 'serp' => []];
+        $frealtimeApiClient  = $this->getMockBuilder('\PrCy\Frealtime\Client')
+            ->disableOriginalConstructor()
+            ->setMethods(['doRequest'])
+            ->getMock();
+        $frealtimeApiClient->expects($this->once())
+            ->method('doRequest')
+            ->with(
+                $this->equalTo('GET'),
+                $this->equalTo('/yandex/search'),
+                $this->equalTo('frealtime.api.yandex.search'),
+                $this->equalTo(['query' => $query])
+            )
+            ->willReturn($result);
+        $this->assertEquals($result, $frealtimeApiClient->getYandexSerp($query));
+    }
 }
