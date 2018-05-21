@@ -163,20 +163,107 @@ class Client extends BaseClient
     }
 
     /**
-     * Получает tf-idf для лемм (и ключевых слов) по указанному url
+     * Получает леммы для указанного текста
      *
-     * @param string $url
-     * @param array $keywords
+     * @param string $text
      * @param integer $priority
      * @return mixed
      */
-    public function getLemmasForUrl($url, $keywords = [], $priority = Producer::PRIORITY_NORMAL)
+    public function getLemmas($text, $priority = Producer::PRIORITY_NORMAL)
     {
         return $this->doRequest(
             'GET',
-            '/ca/tf_idf',
-            'frealtime.api.ca.tf_idf',
+            '/ca/lemmas',
+            'frealtime.api.ca.lemmas',
+            ['text' => $text],
+            $priority
+        );
+    }
+
+    /**
+     * Получает tf-idf для лемм (и ключевых слов) по указанному url
+     *
+     * @param string $url
+     * @param string $keywords
+     * @param integer $priority
+     * @return mixed
+     */
+    public function getTfIdfByUrl($url, $keywords = '', $priority = Producer::PRIORITY_NORMAL)
+    {
+        return $this->doRequest(
+            'GET',
+            '/ca/tfidf_by_url',
+            'frealtime.api.ca.tfidf_by_url',
             ['url' => $url, 'keywords' => $keywords],
+            $priority
+        );
+    }
+
+    /**
+     * Получает tf-idf для лемм (и ключевых слов) по указанному тексту
+     *
+     * @param string $text
+     * @param string $keywords
+     * @param integer $priority
+     * @return mixed
+     */
+    public function getTfIdfByText($text, $keywords = '', $priority = Producer::PRIORITY_NORMAL)
+    {
+        return $this->doRequest(
+            'GET',
+            '/ca/tfidf_by_text',
+            'frealtime.api.ca.tfidf_by_text',
+            ['text' => $text, 'keywords' => $keywords],
+            $priority
+        );
+    }
+
+    /**
+     * Get browser data
+     *
+     * @param string $url адрес веб страницы
+     * @param string $user_agent user agent
+     * @param int    $timeout таймаут на загрузку страницы в секундах
+     *
+     * @return array
+     */
+    public function getBrowserData($url, $user_agent = '', $referer = '', $timeout = 30, $priority = Producer::PRIORITY_NORMAL)
+    {
+        return $this->doRequest(
+            'GET',
+            '/ca/browser_data',
+            'frealtime.api.ca.browser_data',
+            [
+                'url'        => $url,
+                'timeout'    => $timeout,
+                'user_agent' => $user_agent,
+                'referer'    => $referer
+            ],
+            $priority
+        );
+    }
+
+    /**
+     * Get browser data
+     *
+     * @param string $url адрес веб страницы
+     * @param string $user_agent user agent
+     * @param int    $timeout таймаут на загрузку страницы в секундах
+     *
+     * @return array
+     */
+    public function getBrowserDataWithLemmas($url, $user_agent = '', $referer = '', $timeout = 30, $priority = Producer::PRIORITY_NORMAL)
+    {
+        return $this->doRequest(
+            'GET',
+            '/ca/browser_data_with_lemmas',
+            'frealtime.api.ca.browser_data_with_lemmas',
+            [
+                'url'        => $url,
+                'timeout'    => $timeout,
+                'user_agent' => $user_agent,
+                'referer'    => $referer
+            ],
             $priority
         );
     }

@@ -377,9 +377,30 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($frealtimeApiClient->getYandexCatalog($domain));
     }
 
-    public function testGetLemmasForUrl()
+    public function testGetLemmas()
     {
-        $domain  = 'example.com';
+        $text  = 'мама мыла раму';
+        $result  = ["мама", "мыть", "рама"];
+        $frealtimeApiClient  = $this->getMockBuilder('\PrCy\Frealtime\Client')
+            ->disableOriginalConstructor()
+            ->setMethods(['doRequest'])
+            ->getMock();
+
+        $keywords = [];
+        $frealtimeApiClient->expects($this->once())
+            ->method('doRequest')
+            ->with(
+                $this->equalTo('GET'),
+                $this->equalTo('/ca/lemmas'),
+                $this->equalTo('frealtime.api.ca.lemmas'),
+                $this->equalTo(['text' => $text])
+            )
+            ->willReturn($result);
+        $frealtimeApiClient->getLemmas($text);
+    }
+
+    public function testGetTfIdfByUrl()
+    {
         $result  = [
             "keywordsLemmasCount" => 0,
             "keywordsLemmas"      => [],
@@ -397,49 +418,96 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         ];
         $frealtimeApiClient  = $this->getMockBuilder('\PrCy\Frealtime\Client')
             ->disableOriginalConstructor()
-            #->setMethods(['getLemmasForUrl'])
             ->setMethods(['doRequest'])
             ->getMock();
-#        $frealtimeApiClient->expects($this->once())
-#            ->method('getLemmasForUrl')
-#            ->with($this->equalTo("example.com"))
-#            ->willReturn($result);
 
         $url = 'http://example.com';
-        $keywords = [];
+        $keywords = '';
         $frealtimeApiClient->expects($this->once())
             ->method('doRequest')
             ->with(
                 $this->equalTo('GET'),
-                $this->equalTo('/ca/tf_idf'),
-                $this->equalTo('frealtime.api.ca.tf_idf'),
+                $this->equalTo('/ca/tfidf_by_url'),
+                $this->equalTo('frealtime.api.ca.tfidf_by_url'),
                 $this->equalTo(['url' => $url, 'keywords' => $keywords])
             )
             ->willReturn($result);
 
-        $frealtimeApiClient->getLemmasForUrl($url, $keywords);
+        $frealtimeApiClient->getTfIdfByUrl($url, $keywords);
     }
 
-
-
-    public function _testGetYandexSerp()
+    public function testGetTfIdfByText()
     {
-        return;
-        $query   = 'test';
-        $result  = ['count' => -1, 'serp' => []];
+        $result  = [
+            "keywordsLemmasCount" => 0,
+            "keywordsLemmas"      => [],
+            "lemmasCount" => 1,
+            "lemmas"      => [
+                [
+                    "docsCount"  => 34765,
+                    "tf"         => 0.017543859649122806,
+                    "termsCount" => 6,
+                    "idf"        => 1.620057708962932,
+                    "lemma"      => "ученый",
+                    "tfidf"      => 0.02842206506952512
+                ]
+            ]
+        ];
         $frealtimeApiClient  = $this->getMockBuilder('\PrCy\Frealtime\Client')
             ->disableOriginalConstructor()
             ->setMethods(['doRequest'])
             ->getMock();
+
+        $text  = 'мама мыла раму';
+        $keywords = '';
         $frealtimeApiClient->expects($this->once())
             ->method('doRequest')
             ->with(
                 $this->equalTo('GET'),
-                $this->equalTo('/yandex/search'),
-                $this->equalTo('frealtime.api.yandex.search'),
-                $this->equalTo(['query' => $query])
+                $this->equalTo('/ca/tfidf_by_text'),
+                $this->equalTo('frealtime.api.ca.tfidf_by_text'),
+                $this->equalTo(['text' => $text, 'keywords' => $keywords])
             )
             ->willReturn($result);
-        $this->assertEquals($result, $frealtimeApiClient->getYandexSerp($query));
+        $frealtimeApiClient->getTfIdfByText($text);
     }
+
+    public function testGetBrowserData()
+    {
+        $frealtimeApiClient  = $this->getMockBuilder('\PrCy\Frealtime\Client')
+            ->disableOriginalConstructor()
+            ->setMethods(['doRequest'])
+            ->getMock();
+
+        $url = 'http://example.com';
+        $frealtimeApiClient->expects($this->once())
+            ->method('doRequest')
+            ->with(
+                $this->equalTo('GET'),
+                $this->equalTo('/ca/browser_data'),
+                $this->equalTo('frealtime.api.ca.browser_data'),
+                $this->equalTo(['url' => $url, 'user_agent' => '', 'timeout' => 30, 'referer' => ''])
+            );
+        $frealtimeApiClient->getBrowserData($url);
+    }
+
+    public function testGetBrowserDataWithLemmas()
+    {
+        $frealtimeApiClient  = $this->getMockBuilder('\PrCy\Frealtime\Client')
+            ->disableOriginalConstructor()
+            ->setMethods(['doRequest'])
+            ->getMock();
+
+        $url = 'http://example.com';
+        $frealtimeApiClient->expects($this->once())
+            ->method('doRequest')
+            ->with(
+                $this->equalTo('GET'),
+                $this->equalTo('/ca/browser_data_with_lemmas'),
+                $this->equalTo('frealtime.api.ca.browser_data_with_lemmas'),
+                $this->equalTo(['url' => $url, 'user_agent' => '', 'timeout' => 30, 'referer' => ''])
+            );
+        $frealtimeApiClient->getBrowserDataWithLemmas($url);
+    }
+
 }
