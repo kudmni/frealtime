@@ -174,6 +174,28 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result['count'], $frealtimeApiClient->getYandexIndex($domain));
     }
 
+
+    public function testGetYandexTic()
+    {
+        $domain  = 'example.com';
+        $tic     = 100500;
+        $frealtimeApiClient  = $this->getMockBuilder('\PrCy\Frealtime\Client')
+            ->disableOriginalConstructor()
+            ->setMethods(['doRequest'])
+            ->getMock();
+        $frealtimeApiClient->expects($this->once())
+            ->method('doRequest')
+            ->with(
+                $this->equalTo('GET'),
+                $this->equalTo('/yandex/tic'),
+                $this->equalTo('frealtime.api.yandex.tic'),
+                $this->equalTo(['domain' => $domain])
+            )
+            ->willReturn(['tic' => $tic]);
+        $result = $frealtimeApiClient->getYandexTic($domain);
+        $this->assertEquals($tic, $result['tic']);
+    }
+
     public function testDoAmqpRequest()
     {
         $domain  = 'example.com';

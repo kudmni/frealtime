@@ -163,6 +163,24 @@ class Client extends BaseClient
     }
 
     /**
+     * Получает данные тИЦ из Яндекс.Вебмастера
+     *
+     * @param string $domain
+     * @param integer $priority
+     * @return array
+     */
+    public function getYandexTic($domain, $priority = Producer::PRIORITY_NORMAL)
+    {
+        return $this->doRequest(
+            'GET',
+            '/yandex/tic',
+            'frealtime.api.yandex.tic',
+            ['domain' => $domain],
+            $priority
+        );
+    }
+
+    /**
      * Получает леммы для указанного текста
      *
      * @param string $text
