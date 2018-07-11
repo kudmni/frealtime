@@ -421,6 +421,28 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $frealtimeApiClient->getLemmas($text);
     }
 
+    public function testGetLemmasPerLine()
+    {
+        $text  = 'мама мыла раму';
+        $result  = ["мама", "мыть", "рама"];
+        $frealtimeApiClient  = $this->getMockBuilder('\PrCy\Frealtime\Client')
+            ->disableOriginalConstructor()
+            ->setMethods(['doRequest'])
+            ->getMock();
+
+        $keywords = [];
+        $frealtimeApiClient->expects($this->once())
+            ->method('doRequest')
+            ->with(
+                $this->equalTo('GET'),
+                $this->equalTo('/ca/lemmas_per_line'),
+                $this->equalTo('frealtime.api.ca.lemmas_per_line'),
+                $this->equalTo(['text' => $text])
+            )
+            ->willReturn($result);
+        $frealtimeApiClient->getLemmasPerLine($text);
+    }
+
     public function testGetTfIdfByUrl()
     {
         $result  = [

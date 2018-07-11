@@ -199,6 +199,25 @@ class Client extends BaseClient
     }
 
     /**
+     * Получает леммы для указанного текста построчно
+     *
+     * @param string $text
+     * @param integer $priority
+     * @return mixed
+     */
+    public function getLemmasPerLine($text, $priority = Producer::PRIORITY_NORMAL)
+    {
+        return $this->doRequest(
+            'GET',
+            '/ca/lemmas_per_line',
+            'frealtime.api.ca.lemmas_per_line',
+            ['text' => $text],
+            $priority
+        );
+    }
+
+
+    /**
      * Получает tf-idf для лемм (и ключевых слов) по указанному url
      *
      * @param string $url
