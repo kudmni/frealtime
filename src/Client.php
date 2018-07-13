@@ -218,6 +218,25 @@ class Client extends BaseClient
 
 
     /**
+     * Получает оценку расстояния для каждой из фраз указанного текста
+     *
+     * @param string $text
+     * @param integer $priority
+     * @return mixed
+     */
+    public function getDistanceMeasure($phrases, $text, $priority = Producer::PRIORITY_NORMAL)
+    {
+        return $this->doRequest(
+            'GET',
+            '/ca/distance_measure',
+            'frealtime.api.ca.distance_measure',
+            ['phrases' => $phrases, 'text' => $text],
+            $priority
+        );
+    }
+
+
+    /**
      * Получает tf-idf для лемм (и ключевых слов) по указанному url
      *
      * @param string $url

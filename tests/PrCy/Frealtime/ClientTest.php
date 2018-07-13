@@ -443,6 +443,29 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $frealtimeApiClient->getLemmasPerLine($text);
     }
 
+
+    public function testDistanceMeasure()
+    {
+        $phrases  = "мама мыла\nмама чисто";
+        $text  = 'мама мыла раму очень чисто';
+        $frealtimeApiClient  = $this->getMockBuilder('\PrCy\Frealtime\Client')
+            ->disableOriginalConstructor()
+            ->setMethods(['doRequest'])
+            ->getMock();
+
+        $keywords = [];
+        $frealtimeApiClient->expects($this->once())
+            ->method('doRequest')
+            ->with(
+                $this->equalTo('GET'),
+                $this->equalTo('/ca/distance_measure'),
+                $this->equalTo('frealtime.api.ca.distance_measure'),
+                $this->equalTo(['phrases' => $phrases, 'text' => $text])
+            )
+            ->willReturn($result);
+        $frealtimeApiClient->getDistanceMeasure($phrases, $text);
+    }
+
     public function testGetTfIdfByUrl()
     {
         $result  = [
