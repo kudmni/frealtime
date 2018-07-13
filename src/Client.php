@@ -220,6 +220,7 @@ class Client extends BaseClient
     /**
      * Получает оценку расстояния для каждой из фраз указанного текста
      *
+     * @param string $phrases
      * @param string $text
      * @param integer $priority
      * @return mixed
