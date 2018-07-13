@@ -444,7 +444,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function testDistanceMeasure()
+    public function testGetDistanceMeasure()
     {
         $phrases  = "мама мыла\nмама чисто";
         $text  = 'мама мыла раму очень чисто';
