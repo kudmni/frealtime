@@ -446,8 +446,16 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     public function testGetDistanceMeasure()
     {
-        $phrases  = "мама мыла\nмама чисто";
-        $text  = 'мама мыла раму очень чисто';
+        $phrases  = "мама мыла";
+        $text = 'мама мыла раму очень чисто мама';
+        $result = [
+            [
+                "phrase" => "мама мыла",
+                "distance_measure" => 2.5,
+                    "distances" => [1, 4]
+            ]
+        ];
+
         $frealtimeApiClient  = $this->getMockBuilder('\PrCy\Frealtime\Client')
             ->disableOriginalConstructor()
             ->setMethods(['doRequest'])
