@@ -585,4 +585,22 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $frealtimeApiClient->getBrowserDataWithLemmas($url);
     }
 
+    public function testGetSimilarWebData()
+    {
+        $frealtimeApiClient  = $this->getMockBuilder('\PrCy\Frealtime\Client')
+            ->disableOriginalConstructor()
+            ->setMethods(['doRequest'])
+            ->getMock();
+
+        $domain = 'example.com';
+        $frealtimeApiClient->expects($this->once())
+            ->method('doRequest')
+            ->with(
+                $this->equalTo('GET'),
+                $this->equalTo('/sw/parse_sw_with_salt'),
+                $this->equalTo('frealtime.api.sw.parse_sw_with_salt'),
+                $this->equalTo(['domain' => $domain, 'user_agent' => '', 'timeout' => 30, 'referer' => ''])
+            );
+        $frealtimeApiClient->getSimilarWebData($domain);
+    }
 }

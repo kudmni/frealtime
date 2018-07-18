@@ -276,11 +276,12 @@ class Client extends BaseClient
     }
 
     /**
-     * Get browser data
+     * Получает контент страницы из каспера
      *
-     * @param string $url адрес веб страницы
-     * @param string $user_agent user agent
-     * @param int    $timeout таймаут на загрузку страницы в секундах
+     * @param string $url
+     * @param string $user_agent
+     * @param integer $timeout
+     * @param integer $priority
      *
      * @return array
      */
@@ -301,11 +302,12 @@ class Client extends BaseClient
     }
 
     /**
-     * Get browser data
+     * Получает контент страницы из каспера + разбивает текст на леммы
      *
-     * @param string $url адрес веб страницы
-     * @param string $user_agent user agent
-     * @param int    $timeout таймаут на загрузку страницы в секундах
+     * @param string $url
+     * @param string $user_agent
+     * @param integer $timeout
+     * @param integer $priority
      *
      * @return array
      */
@@ -317,6 +319,32 @@ class Client extends BaseClient
             'frealtime.api.ca.browser_data_with_lemmas',
             [
                 'url'        => $url,
+                'timeout'    => $timeout,
+                'user_agent' => $user_agent,
+                'referer'    => $referer
+            ],
+            $priority
+        );
+    }
+
+    /**
+     * Получает данные по домену из SimilarWeb
+     *
+     * @param string $domain
+     * @param string $user_agent
+     * @param integer $timeout
+     * @param integer $priority
+     *
+     * @return array
+     */
+    public function getSimilarWebData($domain, $user_agent = '', $referer = '', $timeout = 30, $priority = Producer::PRIORITY_NORMAL)
+    {
+        return $this->doRequest(
+            'GET',
+            '/sw/parse_sw_with_salt',
+            'frealtime.api.sw.parse_sw_with_salt',
+            [
+                'domain'     => $domain,
                 'timeout'    => $timeout,
                 'user_agent' => $user_agent,
                 'referer'    => $referer
