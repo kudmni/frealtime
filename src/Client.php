@@ -305,13 +305,14 @@ class Client extends BaseClient
      * Получает контент страницы из каспера + разбивает текст на леммы
      *
      * @param string $url
+     * @param string $keywords
      * @param string $user_agent
      * @param integer $timeout
      * @param integer $priority
      *
      * @return array
      */
-    public function getBrowserDataWithLemmas($url, $user_agent = '', $referer = '', $timeout = 30, $priority = Producer::PRIORITY_NORMAL)
+    public function getBrowserDataWithLemmas($url, $keywords = '', $user_agent = '', $referer = '', $timeout = 30, $priority = Producer::PRIORITY_NORMAL)
     {
         return $this->doRequest(
             'GET',
@@ -319,6 +320,7 @@ class Client extends BaseClient
             'frealtime.api.ca.browser_data_with_lemmas',
             [
                 'url'        => $url,
+                'keywords'   => $keywords,
                 'timeout'    => $timeout,
                 'user_agent' => $user_agent,
                 'referer'    => $referer

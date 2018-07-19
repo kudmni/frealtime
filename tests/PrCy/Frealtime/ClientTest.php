@@ -580,7 +580,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
                 $this->equalTo('GET'),
                 $this->equalTo('/ca/browser_data_with_lemmas'),
                 $this->equalTo('frealtime.api.ca.browser_data_with_lemmas'),
-                $this->equalTo(['url' => $url, 'user_agent' => '', 'timeout' => 30, 'referer' => ''])
+                $this->equalTo(['url' => $url, 'keywords' => '', 'user_agent' => '', 'timeout' => 30, 'referer' => ''])
             );
         $frealtimeApiClient->getBrowserDataWithLemmas($url);
     }
