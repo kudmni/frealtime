@@ -196,6 +196,34 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($tic, $result['tic']);
     }
 
+    public function testGetYandexSqi()
+    {
+        $domain = 'example.com';
+        $result = [
+            "isCurrent" => true,
+            "hostDisplayName" => "https://example.com",
+            "sqi" => 8800,
+            "title" => "example.com",
+            "status" => "SQI_FOUND"
+        ];
+
+        $frealtimeApiClient  = $this->getMockBuilder('\PrCy\Frealtime\Client')
+            ->disableOriginalConstructor()
+            ->setMethods(['doRequest'])
+            ->getMock();
+        $frealtimeApiClient->expects($this->once())
+            ->method('doRequest')
+            ->with(
+                $this->equalTo('GET'),
+                $this->equalTo('/yandex/sqi'),
+                $this->equalTo('frealtime.api.yandex.sqi'),
+                $this->equalTo(['domain' => $domain])
+            )
+            ->willReturn($result);
+        $returnResult = $frealtimeApiClient->getYandexSqi($domain);
+        $this->assertEquals($result, $returnResult);
+    }
+
     public function testDoAmqpRequest()
     {
         $domain  = 'example.com';
