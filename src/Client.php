@@ -181,6 +181,24 @@ class Client extends BaseClient
     }
 
     /**
+     * Получает данные ИКС из Яндекс.Вебмастера
+     *
+     * @param string $domain
+     * @param integer $priority
+     * @return array
+     */
+    public function getYandexSqi($domain, $priority = Producer::PRIORITY_NORMAL)
+    {
+        return $this->doRequest(
+            'GET',
+            '/yandex/Sqi',
+            'frealtime.api.yandex.Sqi',
+            ['domain' => $domain],
+            $priority
+        );
+    }
+
+    /**
      * Получает леммы для указанного текста
      *
      * @param string $text
