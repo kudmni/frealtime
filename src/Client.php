@@ -191,8 +191,8 @@ class Client extends BaseClient
     {
         return $this->doRequest(
             'GET',
-            '/yandex/Sqi',
-            'frealtime.api.yandex.Sqi',
+            '/yandex/sqi',
+            'frealtime.api.yandex.sqi',
             ['domain' => $domain],
             $priority
         );
