@@ -199,6 +199,25 @@ class Client extends BaseClient
     }
 
     /**
+     * Получает данные ИКС из Яндекс.Вебмастера для списка доменов
+     * (максимум 100 доменов)
+     *
+     * @param array $domains
+     * @param integer $priority
+     * @return array
+     */
+    public function getYandexSqiBatch(array $domains, $priority = Producer::PRIORITY_NORMAL)
+    {
+        return $this->doRequest(
+            'GET',
+            '/yandex/sqi_batch',
+            'frealtime.api.yandex.sqi_batch',
+            ['domains' => json_encode($domains)],
+            $priority
+        );
+    }
+
+    /**
      * Получает леммы для указанного текста
      *
      * @param string $text
