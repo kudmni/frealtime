@@ -151,8 +151,8 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             ->method('doRequest')
             ->with(
                 $this->equalTo('GET'),
-                $this->equalTo('/yandex/search'),
-                $this->equalTo('frealtime.api.yandex.search'),
+                $this->equalTo('/yandex_xml/search'),
+                $this->equalTo('frealtime.api.yandex_xml.search'),
                 $this->equalTo(['query' => $query])
             )
             ->willReturn($result);

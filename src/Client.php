@@ -138,8 +138,8 @@ class Client extends BaseClient
         );
         return $this->doRequest(
             'GET',
-            '/yandex/search',
-            'frealtime.api.yandex.search',
+            '/yandex_xml/search',
+            'frealtime.api.yandex_xml.search',
             $params,
             $priority
         );
