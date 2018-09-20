@@ -199,6 +199,24 @@ class Client extends BaseClient
     }
 
     /**
+     * Получает данные ИКС из счетчика
+     *
+     * @param string $domain
+     * @param integer $priority
+     * @return array
+     */
+    public function getYandexCycounter($domain, $priority = Producer::PRIORITY_NORMAL)
+    {
+        return $this->doRequest(
+            'GET',
+            '/yandex/cycounter',
+            'frealtime.api.yandex.cycounter',
+            ['domain' => $domain],
+            $priority
+        );
+    }
+
+    /**
      * Получает данные ИКС из Яндекс.Вебмастера для списка доменов
      * (максимум 100 доменов)
      *

@@ -225,6 +225,31 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $returnResult);
     }
 
+    public function testGetYandexCycounter()
+    {
+        $domain = 'example.com';
+        $result = [
+            "domain" => "example.com",
+            "sqi"    => 8800
+        ];
+
+        $frealtimeApiClient  = $this->getMockBuilder('\PrCy\Frealtime\Client')
+            ->disableOriginalConstructor()
+            ->setMethods(['doRequest'])
+            ->getMock();
+        $frealtimeApiClient->expects($this->once())
+            ->method('doRequest')
+            ->with(
+                $this->equalTo('GET'),
+                $this->equalTo('/yandex/cycounter'),
+                $this->equalTo('frealtime.api.yandex.cycounter'),
+                $this->equalTo(['domain' => $domain])
+            )
+            ->willReturn($result);
+        $returnResult = $frealtimeApiClient->getYandexCycounter($domain);
+        $this->assertEquals($result, $returnResult);
+    }
+
     public function testGetYandexSqiBatch()
     {
         $domains = ['example.com'];
