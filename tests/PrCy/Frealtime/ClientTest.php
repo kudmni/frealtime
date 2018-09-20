@@ -151,8 +151,8 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             ->method('doRequest')
             ->with(
                 $this->equalTo('GET'),
-                $this->equalTo('/yandex/search'),
-                $this->equalTo('frealtime.api.yandex.search'),
+                $this->equalTo('/yandex_xml/search'),
+                $this->equalTo('frealtime.api.yandex_xml.search'),
                 $this->equalTo(['query' => $query])
             )
             ->willReturn($result);
@@ -200,11 +200,12 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     {
         $domain = 'example.com';
         $result = [
-            "isCurrent" => true,
+            "domain"          => "example.com",
+            "isCurrent"       => true,
             "hostDisplayName" => "https://example.com",
-            "sqi" => 8800,
-            "title" => "example.com",
-            "status" => "SQI_FOUND"
+            "sqi"             => 8800,
+            "title"           => "example.com",
+            "status"          => "SQI_FOUND"
         ];
 
         $frealtimeApiClient  = $this->getMockBuilder('\PrCy\Frealtime\Client')
@@ -221,6 +222,35 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             )
             ->willReturn($result);
         $returnResult = $frealtimeApiClient->getYandexSqi($domain);
+        $this->assertEquals($result, $returnResult);
+    }
+
+    public function testGetYandexSqiBatch()
+    {
+        $domains = ['example.com'];
+        $result = [[
+            "domain"          => "example.com",
+            "isCurrent"       => true,
+            "hostDisplayName" => "https://example.com",
+            "sqi"             => 8800,
+            "title"           => "example.com",
+            "status"          => "SQI_FOUND"
+        ]];
+
+        $frealtimeApiClient  = $this->getMockBuilder('\PrCy\Frealtime\Client')
+            ->disableOriginalConstructor()
+            ->setMethods(['doRequest'])
+            ->getMock();
+        $frealtimeApiClient->expects($this->once())
+            ->method('doRequest')
+            ->with(
+                $this->equalTo('GET'),
+                $this->equalTo('/yandex/sqi_batch'),
+                $this->equalTo('frealtime.api.yandex.sqi_batch'),
+                $this->equalTo(['domains' => json_encode($domains)])
+            )
+            ->willReturn($result);
+        $returnResult = $frealtimeApiClient->getYandexSqiBatch($domains);
         $this->assertEquals($result, $returnResult);
     }
 

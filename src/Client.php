@@ -138,8 +138,8 @@ class Client extends BaseClient
         );
         return $this->doRequest(
             'GET',
-            '/yandex/search',
-            'frealtime.api.yandex.search',
+            '/yandex_xml/search',
+            'frealtime.api.yandex_xml.search',
             $params,
             $priority
         );
@@ -194,6 +194,25 @@ class Client extends BaseClient
             '/yandex/sqi',
             'frealtime.api.yandex.sqi',
             ['domain' => $domain],
+            $priority
+        );
+    }
+
+    /**
+     * Получает данные ИКС из Яндекс.Вебмастера для списка доменов
+     * (максимум 100 доменов)
+     *
+     * @param array $domains
+     * @param integer $priority
+     * @return array
+     */
+    public function getYandexSqiBatch(array $domains, $priority = Producer::PRIORITY_NORMAL)
+    {
+        return $this->doRequest(
+            'GET',
+            '/yandex/sqi_batch',
+            'frealtime.api.yandex.sqi_batch',
+            ['domains' => json_encode($domains)],
             $priority
         );
     }
