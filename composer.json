@@ -9,16 +9,10 @@
             "email": "we@pr-cy.ru"
         }
     ],
-	"repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/kudmni/rabbitmq"
-        }
-    ],
     "require": {
         "php": ">=5.5",
-		"guzzlehttp/guzzle": "6.1.0",
-		"kudmni/rabbitmq": "~2.0"
+	"guzzlehttp/guzzle": "6.1.0",
+	"kudmni/rabbitmq": "~2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "4.7.*",
