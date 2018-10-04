@@ -174,7 +174,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result['count'], $frealtimeApiClient->getYandexIndex($domain));
     }
 
-
     public function testGetYandexTic()
     {
         $domain  = 'example.com';
@@ -194,6 +193,29 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn(['tic' => $tic]);
         $result = $frealtimeApiClient->getYandexTic($domain);
         $this->assertEquals($tic, $result['tic']);
+    }
+
+    public function testGetYandexLastTic()
+    {
+        $domain  = 'example.com';
+        $tic     = 1400;
+        $updated = '2018-08-27T15:45:02.093000';
+        $frealtimeApiClient  = $this->getMockBuilder('\PrCy\Frealtime\Client')
+            ->disableOriginalConstructor()
+            ->setMethods(['doRequest'])
+            ->getMock();
+        $frealtimeApiClient->expects($this->once())
+            ->method('doRequest')
+            ->with(
+                $this->equalTo('GET'),
+                $this->equalTo('/yandex/last_tic'),
+                $this->equalTo('frealtime.api.yandex.last_tic'),
+                $this->equalTo(['domain' => $domain])
+            )
+            ->willReturn(['tic' => $tic, 'updated' => $updated]);
+        $result = $frealtimeApiClient->getYandexLastTic($domain);
+        $this->assertEquals($tic, $result['tic']);
+        $this->assertEquals($updated, $result['updated']);
     }
 
     public function testGetYandexSqi()

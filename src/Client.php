@@ -181,6 +181,24 @@ class Client extends BaseClient
     }
 
     /**
+     * Получает данные тИЦ из архива
+     *
+     * @param string $domain
+     * @param integer $priority
+     * @return array
+     */
+    public function getYandexLastTic($domain, $priority = Producer::PRIORITY_NORMAL)
+    {
+        return $this->doRequest(
+            'GET',
+            '/yandex/last_tic',
+            'frealtime.api.yandex.last_tic',
+            ['domain' => $domain],
+            $priority
+        );
+    }
+
+    /**
      * Получает данные ИКС из Яндекс.Вебмастера
      *
      * @param string $domain
