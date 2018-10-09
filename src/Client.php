@@ -254,6 +254,24 @@ class Client extends BaseClient
     }
 
     /**
+     * Получает данные о достижениях сайта из Яндекс.Вебмастера
+     *
+     * @param string $domain
+     * @param integer $priority
+     * @return array
+     */
+    public function getYandexAchievements($domain, $priority = Producer::PRIORITY_NORMAL)
+    {
+        return $this->doRequest(
+            'GET',
+            '/yandex/achievements',
+            'frealtime.api.yandex.achievements',
+            ['domain' => $domain],
+            $priority
+        );
+    }
+
+    /**
      * Получает леммы для указанного текста
      *
      * @param string $text

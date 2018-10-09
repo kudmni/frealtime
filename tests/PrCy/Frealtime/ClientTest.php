@@ -301,6 +301,35 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $returnResult);
     }
 
+    public function testGetYandexAchievements()
+    {
+        $domain = 'example.com';
+        $result = [
+            "USER_CHOICE" => 4,
+            "POPULAR"     => 3,
+            "SQI"         => [
+                "title"           => "",
+                "hostDisplayName" => "http://example.com",
+                "sqi"             => 900
+            ]
+        ];
+        $frealtimeApiClient  = $this->getMockBuilder('\PrCy\Frealtime\Client')
+            ->disableOriginalConstructor()
+            ->setMethods(['doRequest'])
+            ->getMock();
+        $frealtimeApiClient->expects($this->once())
+            ->method('doRequest')
+            ->with(
+                $this->equalTo('GET'),
+                $this->equalTo('/yandex/achievements'),
+                $this->equalTo('frealtime.api.yandex.achievements'),
+                $this->equalTo(['domain' => $domain])
+            )
+            ->willReturn($result);
+        $returnResult = $frealtimeApiClient->getYandexAchievements($domain);
+        $this->assertEquals($result, $returnResult);
+    }
+
     public function testDoAmqpRequest()
     {
         $domain  = 'example.com';
