@@ -174,7 +174,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result['count'], $frealtimeApiClient->getYandexIndex($domain));
     }
 
-
     public function testGetYandexTic()
     {
         $domain  = 'example.com';
@@ -194,6 +193,29 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             ->willReturn(['tic' => $tic]);
         $result = $frealtimeApiClient->getYandexTic($domain);
         $this->assertEquals($tic, $result['tic']);
+    }
+
+    public function testGetYandexLastTic()
+    {
+        $domain  = 'example.com';
+        $tic     = 1400;
+        $updated = '2018-08-27T15:45:02.093000';
+        $frealtimeApiClient  = $this->getMockBuilder('\PrCy\Frealtime\Client')
+            ->disableOriginalConstructor()
+            ->setMethods(['doRequest'])
+            ->getMock();
+        $frealtimeApiClient->expects($this->once())
+            ->method('doRequest')
+            ->with(
+                $this->equalTo('GET'),
+                $this->equalTo('/yandex/last_tic'),
+                $this->equalTo('frealtime.api.yandex.last_tic'),
+                $this->equalTo(['domain' => $domain])
+            )
+            ->willReturn(['tic' => $tic, 'updated' => $updated]);
+        $result = $frealtimeApiClient->getYandexLastTic($domain);
+        $this->assertEquals($tic, $result['tic']);
+        $this->assertEquals($updated, $result['updated']);
     }
 
     public function testGetYandexSqi()
@@ -276,6 +298,35 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             )
             ->willReturn($result);
         $returnResult = $frealtimeApiClient->getYandexSqiBatch($domains);
+        $this->assertEquals($result, $returnResult);
+    }
+
+    public function testGetYandexAchievements()
+    {
+        $domain = 'example.com';
+        $result = [
+            "USER_CHOICE" => 4,
+            "POPULAR"     => 3,
+            "SQI"         => [
+                "title"           => "",
+                "hostDisplayName" => "http://example.com",
+                "sqi"             => 900
+            ]
+        ];
+        $frealtimeApiClient  = $this->getMockBuilder('\PrCy\Frealtime\Client')
+            ->disableOriginalConstructor()
+            ->setMethods(['doRequest'])
+            ->getMock();
+        $frealtimeApiClient->expects($this->once())
+            ->method('doRequest')
+            ->with(
+                $this->equalTo('GET'),
+                $this->equalTo('/yandex/achievements'),
+                $this->equalTo('frealtime.api.yandex.achievements'),
+                $this->equalTo(['domain' => $domain])
+            )
+            ->willReturn($result);
+        $returnResult = $frealtimeApiClient->getYandexAchievements($domain);
         $this->assertEquals($result, $returnResult);
     }
 
