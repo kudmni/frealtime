@@ -52,12 +52,12 @@ class Client extends BaseClient
      *
      * @param string $domain
      * @param integer $priority
-     * @return mixed
+     * @return integer
      */
     public function getGoogleIndex($domain, $priority = Producer::PRIORITY_NORMAL)
     {
         $serp = $this->getGoogleSerp("site:$domain", null, null, null, null, null, $priority);
-        $result = false;
+        $result = -1;
         if (is_array($serp) && array_key_exists('count', $serp)) {
             $result = (int) $serp['count'];
         }
@@ -150,12 +150,12 @@ class Client extends BaseClient
      *
      * @param string $domain
      * @param integer $priority
-     * @return mixed
+     * @return integer
      */
     public function getYandexIndex($domain, $priority = Producer::PRIORITY_NORMAL)
     {
         $serp = $this->getYandexSerp("host:$domain | host:www.$domain", null, null, $priority);
-        $result = false;
+        $result = -1;
         if (is_array($serp) && array_key_exists('count', $serp)) {
             $result = (int) $serp['count'];
         }
