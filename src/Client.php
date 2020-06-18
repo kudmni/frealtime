@@ -155,7 +155,7 @@ class Client extends BaseClient
     public function getYandexIndex($domain, $priority = Producer::PRIORITY_NORMAL)
     {
         $serp = $this->getYandexSerp("host:$domain | host:www.$domain", null, null, $priority);
-        return $serp['count'] ?? -1;
+        return isset($serp['count']) ? $serp['count'] : -1;
     }
 
     /**
