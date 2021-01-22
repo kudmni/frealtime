@@ -2,7 +2,7 @@
 
 namespace PrCy\Frealtime;
 
-use \PrCy\RabbitMQ\Producer;
+use PrCy\RabbitMQ\Producer;
 
 /**
  * Class Client
@@ -394,6 +394,7 @@ class Client extends BaseClient
      * @param string $url
      * @param string $keywords
      * @param string $user_agent
+     * @param string $referer
      * @param integer $timeout
      * @param integer $priority
      *
@@ -437,6 +438,29 @@ class Client extends BaseClient
                 'timeout'    => $timeout,
                 'user_agent' => $user_agent,
                 'referer'    => $referer
+            ],
+            $priority
+        );
+    }
+
+    /**
+     * Генерирует PDF-отчёт
+     *
+     * @param string $url
+     * @param integer $timeout
+     * @param integer $priority
+     *
+     * @return array
+     */
+    public function makePdf($url, $timeout = 30, $priority = Producer::PRIORITY_NORMAL)
+    {
+        return $this->doRequest(
+            'GET',
+            '/pdf/make',
+            'frealtime.api.pdf.make',
+            [
+                'url'     => $url,
+                'timeout' => $timeout,
             ],
             $priority
         );

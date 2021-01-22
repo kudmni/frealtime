@@ -2,7 +2,8 @@
 
 namespace PrCY\Frealtime;
 
-use \PrCy\Frealtime\Client as FrealtimeClient;
+use PrCy\Frealtime\Client as FrealtimeClient;
+use PrCy\RabbitMQ\Producer;
 
 /**
  * Class ClientTest
@@ -736,5 +737,27 @@ class ClientTest extends \PHPUnit_Framework_TestCase
                 $this->equalTo(['domain' => $domain, 'user_agent' => '', 'timeout' => 30, 'referer' => ''])
             );
         $frealtimeApiClient->getSimilarWebData($domain);
+    }
+
+    public function testMakePdf()
+    {
+        $frealtimeApiClient = $this->getMockBuilder('\PrCy\Frealtime\Client')
+            ->disableOriginalConstructor()
+            ->setMethods(['doRequest'])
+            ->getMock();
+
+        $url      = 'http://example.com';
+        $timeout  = 30;
+        $priority = Producer::PRIORITY_NORMAL;
+        $frealtimeApiClient->expects($this->once())
+            ->method('doRequest')
+            ->with(
+                $this->equalTo('GET'),
+                $this->equalTo('/pdf/make'),
+                $this->equalTo('frealtime.api.pdf.make'),
+                $this->equalTo(['url' => $url, 'timeout' => $timeout]),
+                $this->equalTo($priority)
+            );
+        $frealtimeApiClient->makePdf($url, $timeout, $priority);
     }
 }
