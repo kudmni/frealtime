@@ -452,7 +452,7 @@ class Client extends BaseClient
      *
      * @return array
      */
-    public function makePdf($url, $timeout = 30, $priority = Producer::PRIORITY_NORMAL)
+    public function makePdf($url, $footer = '', $timeout = 30, $priority = Producer::PRIORITY_NORMAL)
     {
         return $this->doRequest(
             'GET',
@@ -460,6 +460,7 @@ class Client extends BaseClient
             'frealtime.api.pdf.make',
             [
                 'url'     => $url,
+                'footer'  => $footer,
                 'timeout' => $timeout,
             ],
             $priority

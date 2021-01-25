@@ -747,6 +747,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             ->getMock();
 
         $url      = 'http://example.com';
+        $footer   = '<div><!-- this is footer --></div>';
         $timeout  = 30;
         $priority = Producer::PRIORITY_NORMAL;
         $frealtimeApiClient->expects($this->once())
@@ -755,9 +756,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase
                 $this->equalTo('GET'),
                 $this->equalTo('/pdf/make'),
                 $this->equalTo('frealtime.api.pdf.make'),
-                $this->equalTo(['url' => $url, 'timeout' => $timeout]),
+                $this->equalTo(['url' => $url, 'footer' => $footer, 'timeout' => $timeout]),
                 $this->equalTo($priority)
             );
-        $frealtimeApiClient->makePdf($url, $timeout, $priority);
+        $frealtimeApiClient->makePdf($url, $footer, $timeout, $priority);
     }
 }
